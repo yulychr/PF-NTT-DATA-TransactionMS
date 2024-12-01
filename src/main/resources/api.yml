@@ -1,0 +1,230 @@
+openapi: 3.0.3
+info:
+  title: Accounts Microservice
+  description: |-
+    Microservices to record and manage your customers' banking transaction history. Transactions include deposits, withdrawals and transfers between accounts and transaction history
+  version: 1.0.0
+servers:
+  - url: https://localhost:8086
+tags:
+  - name: transaction
+    description: Transaction management
+
+paths:
+  /transacciones/deposito/{accountNumber}/:
+    post:
+      summary: Register a deposit to an account
+      description: Registers a deposit to a specific account identified by the account number.
+      operationId: registerDeposit
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The account number where the deposit will be made.
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+          description: The amount of money to deposit.
+      responses:
+        "200":
+          description: Deposit successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        '404':
+          description: Account with number "accountNumber" not found.
+        "400":
+          description: "Bad request due to invalid data."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelApiResponse"
+              examples:
+                invalidAmount:
+                  summary: Invalid deposit amount
+                  value:
+                    code: "400"
+                    message: "Invalid deposit amount. Amount must be positive."
+                    details:
+                      field: "amount"
+                      issue: "invalid_amount"
+
+  /transacciones/retiro/{accountNumber}/:
+    post:
+      summary: Register a withdrawal from an account
+      description: Registers a withdrawal from a specific account identified by the account number. number.
+      operationId: registerWithdrawal
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The account number from which the withdrawal will be made.
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+          description: The amount of money to withdraw.
+      responses:
+        "200":
+          description: Withdrawal successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        '404':
+          description: Account with number " accountNumber " not found..
+        "400":
+          description: "Bad request due to invalid data."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelApiResponse"
+              examples:
+                invalidAmount:
+                  summary: Invalid deposit amount
+                  value:
+                    code: "400"
+                    message: "Invalid withdrawal amount. Amount must be positive."
+                    details:
+                      field: "amount"
+                      issue: "invalid_amount"
+        '422':
+          description: Withdrawal amount exceeds available balance.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelApiResponse"
+
+  /transacciones/transferencia/:
+    post:
+      summary: Register a money transfer between two accounts
+      description: Registers a money transfer from a source account to a destination account.
+      operationId: registerTransfer
+      parameters:
+        - name: sourceAccount
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The source account number from which the transfer will be made.
+        - name: destinationAccount
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The destination account number where the transfer will be received.
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+          description: The amount of money to transfer.
+      responses:
+        "200":
+          description: Withdrawal successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          description: "Bad request due to invalid data."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelApiResponse"
+              examples:
+                invalidAmount:
+                  summary: Invalid deposit amount
+                  value:
+                    code: "400"
+                    message: "Invalid withdrawal amount. Amount must be positive."
+                    details:
+                      field: "amount"
+                      issue: "invalid_amount"
+                insufficientFunds:
+                  summary: Insufficient balance in source account
+                  value:
+                    code: "400"
+                    message: "The source account does not have enough balance to complete the transfer."
+        '404':
+          description: One or both accounts not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelApiResponse"
+              examples:
+                sourceAccountNotFound:
+                  value:
+                    error: "Source account not found"
+                    message: "The source account number does not exist."
+                destinationAccountNotFound:
+                  value:
+                    error: "Destination account not found"
+                    message: "The destination account number does not exist."
+
+  /transacciones/historial:
+    get:
+      summary: Retrieve transaction history
+      description: This endpoint returns the list of all transactions in the system.
+      operationId: getTransactionHistory
+      responses:
+        '200':
+          description: A list of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+
+components:
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique ID of the transaction.
+        type:
+          type: string
+          description: The type of transaction (e.g., deposit, withdrawal, transfer)
+        amount:
+          type: number
+          format: double
+          description: The amount deposited.
+        date:
+          type: string
+          format: date-time
+          description: The date and time when the transaction was made.
+        soureAccount:
+          type: string
+          description: The source account number associated with the transaction.
+        destinationAccount:
+          type: string
+          description: The destination account number involved in the transaction (e.g., for transfers).
+      xml:
+        name: order
+    ModelApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: "##default"
+
