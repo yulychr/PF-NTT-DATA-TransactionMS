@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TransactionMS</a> &gt; <a href="index.source.html" class="el_package">com.corebank.TransactionMS.service.impl</a> &gt; <span class="el_source">TransactionServiceImpl.java</span></div><h1>TransactionServiceImpl.java</h1><pre class="source lang-java linenums">package com.corebank.TransactionMS.service.impl;
+
+import com.corebank.TransactionMS.exception.AccountNotFoundException;
+import com.corebank.TransactionMS.exception.InsufficientFundsException;
+import com.corebank.TransactionMS.exception.InvalidTransferAmountException;
+import com.corebank.TransactionMS.model.Account;
+import com.corebank.TransactionMS.model.Transaction;
+import com.corebank.TransactionMS.repository.AccountRepository;
+import com.corebank.TransactionMS.repository.TransactionRepository;
+import com.corebank.TransactionMS.service.TransactionService;
+import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+
+import org.reactivestreams.Publisher;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@RequiredArgsConstructor
+@Service
+public class TransactionServiceImpl implements TransactionService {
+
+    private final TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
+
+    //Metodo para listar las transacciones
+    @Override
+    public Flux&lt;Transaction&gt;listTransactions(){
+<span class="nc" id="L29">        return transactionRepository.findAll();</span>
+    }
+
+    //Metodo para registrar el deposito
+    @Override
+    public Mono&lt;Transaction&gt; registerDeposit(String accountNumber, double amount) {
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (amount &lt;= 0) {</span>
+<span class="nc" id="L36">            return Mono.error(new InvalidTransferAmountException(&quot;Invalid deposit amount. Amount must be positive.&quot;));</span>
+        }
+<span class="nc" id="L38">        return accountRepository.findByAccountNumber(accountNumber)</span>
+<span class="nc" id="L39">                .flatMap(account -&gt; {</span>
+<span class="nc" id="L40">                    account.setBalance(account.getBalance() + amount);</span>
+<span class="nc" id="L41">                    return accountRepository.save(account)</span>
+<span class="nc" id="L42">                            .flatMap(savedAccount -&gt;</span>
+<span class="nc" id="L43">                                    createTransaction(&quot;deposit&quot;, amount, savedAccount, null)</span>
+                            );
+                })
+<span class="nc" id="L46">                .switchIfEmpty(Mono.defer(() -&gt; {</span>
+<span class="nc" id="L47">                    return Mono.error(new AccountNotFoundException(&quot;Account with number &quot; + accountNumber + &quot; not found.&quot;));</span>
+                }));
+    }
+
+    //Metodo para reistrar el retiro
+    @Override
+    public Mono&lt;Transaction&gt; registerWithdrawal(String accountNumber, double amount) {
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (amount &lt;= 0) {</span>
+<span class="nc" id="L55">            return Mono.error(new InvalidTransferAmountException(&quot;Invalid withdrawal amount. Amount must be positive&quot;));</span>
+        }
+
+<span class="nc" id="L58">        return accountRepository.findByAccountNumber(accountNumber)</span>
+<span class="nc" id="L59">                .flatMap(account -&gt; {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                    if (account.getBalance() &gt;= amount) {</span>
+<span class="nc" id="L61">                        account.setBalance(account.getBalance() - amount);</span>
+<span class="nc" id="L62">                        return accountRepository.save(account)</span>
+<span class="nc" id="L63">                                .flatMap(savedAccount -&gt; createTransaction(&quot;withdrawal&quot;, amount, savedAccount, null));</span>
+                    } else {
+<span class="nc" id="L65">                        return Mono.error(new InsufficientFundsException(&quot;Withdrawal amount exceeds available balance.&quot;));</span>
+                    }
+                })
+<span class="nc" id="L68">                .switchIfEmpty(Mono.error(new AccountNotFoundException(&quot;Account with number &quot; + accountNumber + &quot; not found.&quot;)));</span>
+    }
+    //Metodo para hacer una tranferencia
+    @Override
+    public Mono&lt;Transaction&gt; registerTransfer(String sourceAccount, String destinationAccount, double amount) {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (amount &lt;= 0) {</span>
+<span class="nc" id="L74">            return Mono.error(new InvalidTransferAmountException(&quot;Invalid transfer amount. Amount must be positive.&quot;));</span>
+        }
+<span class="nc" id="L76">        return accountRepository.findByAccountNumber(sourceAccount)</span>
+<span class="nc" id="L77">                .switchIfEmpty(Mono.error(new AccountNotFoundException(&quot;Source account not found.&quot;)))</span>
+<span class="nc" id="L78">                .flatMap(accountSource -&gt; accountRepository.findByAccountNumber(destinationAccount)</span>
+<span class="nc" id="L79">                        .switchIfEmpty(Mono.error(new AccountNotFoundException(&quot;Destination account not found.&quot;)))</span>
+<span class="nc" id="L80">                        .flatMap(accountDestination -&gt; {</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                            if (accountSource.getBalance() &gt;= amount) {</span>
+<span class="nc" id="L82">                                accountSource.setBalance(accountSource.getBalance() - amount);</span>
+<span class="nc" id="L83">                                accountDestination.setBalance(accountDestination.getBalance() + amount);</span>
+<span class="nc" id="L84">                                return accountRepository.save(accountSource)</span>
+<span class="nc" id="L85">                                        .then(accountRepository.save(accountDestination))</span>
+<span class="nc" id="L86">                                        .flatMap(savedAccountSource -&gt; createTransaction(&quot;transfer&quot;, amount, savedAccountSource, accountDestination));</span>
+                            } else {
+<span class="nc" id="L88">                                return Mono.error(new InsufficientFundsException(&quot;The source account does not have enough balance to complete the transfer.&quot;)); </span>
+                            }
+                        }));
+    }
+
+    //Metodo para crear la transaccion
+    private Mono&lt;Transaction&gt; createTransaction(String type, double amount, Account sourceAccount, Account destinationAccount) {
+<span class="nc" id="L95">        Transaction transaction = new Transaction();</span>
+<span class="nc" id="L96">        transaction.setDate(LocalDateTime.now());</span>
+<span class="nc" id="L97">        transaction.setType(type);</span>
+<span class="nc" id="L98">        transaction.setAmount(amount);</span>
+<span class="nc" id="L99">        transaction.setSourceAccount(sourceAccount.getId());</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (destinationAccount != null) {</span>
+<span class="nc" id="L101">            transaction.setDestinationAccount(destinationAccount.getId());</span>
+        }
+<span class="nc" id="L103">        return transactionRepository.save(transaction);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

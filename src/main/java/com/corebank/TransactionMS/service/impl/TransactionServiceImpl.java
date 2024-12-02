@@ -8,20 +8,20 @@ import com.corebank.TransactionMS.model.Transaction;
 import com.corebank.TransactionMS.repository.AccountRepository;
 import com.corebank.TransactionMS.repository.TransactionRepository;
 import com.corebank.TransactionMS.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
+
+import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@RequiredArgsConstructor
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    @Autowired
-    private TransactionRepository transactionRepository;
-
-    @Autowired
-    private AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
 
     //Metodo para listar las transacciones
     @Override
@@ -40,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
                     account.setBalance(account.getBalance() + amount);
                     return accountRepository.save(account)
                             .flatMap(savedAccount ->
-                                    createTransaction("deposito", amount, savedAccount, null)
+                                    createTransaction("deposit", amount, savedAccount, null)
                             );
                 })
                 .switchIfEmpty(Mono.defer(() -> {
@@ -60,7 +60,7 @@ public class TransactionServiceImpl implements TransactionService {
                     if (account.getBalance() >= amount) {
                         account.setBalance(account.getBalance() - amount);
                         return accountRepository.save(account)
-                                .flatMap(savedAccount -> createTransaction("retiro", amount, savedAccount, null));
+                                .flatMap(savedAccount -> createTransaction("withdrawal", amount, savedAccount, null));
                     } else {
                         return Mono.error(new InsufficientFundsException("Withdrawal amount exceeds available balance."));
                     }
@@ -83,7 +83,7 @@ public class TransactionServiceImpl implements TransactionService {
                                 accountDestination.setBalance(accountDestination.getBalance() + amount);
                                 return accountRepository.save(accountSource)
                                         .then(accountRepository.save(accountDestination))
-                                        .flatMap(savedAccountSource -> createTransaction("transferencia", amount, savedAccountSource, accountDestination));
+                                        .flatMap(savedAccountSource -> createTransaction("transfer", amount, savedAccountSource, accountDestination));
                             } else {
                                 return Mono.error(new InsufficientFundsException("The source account does not have enough balance to complete the transfer.")); 
                             }
@@ -102,6 +102,5 @@ public class TransactionServiceImpl implements TransactionService {
         }
         return transactionRepository.save(transaction);
     }
-
-
+    
 }

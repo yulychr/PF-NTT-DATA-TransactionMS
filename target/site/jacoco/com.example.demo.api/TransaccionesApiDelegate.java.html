@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransaccionesApiDelegate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TransactionMS</a> &gt; <a href="index.source.html" class="el_package">com.example.demo.api</a> &gt; <span class="el_source">TransaccionesApiDelegate.java</span></div><h1>TransaccionesApiDelegate.java</h1><pre class="source lang-java linenums">package com.example.demo.api;
+
+import com.example.demo.model.ModelApiResponse;
+import com.example.demo.model.Transaction;
+import io.swagger.annotations.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * A delegate to be called by the {@link TransaccionesApiController}}.
+ * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
+ */
+@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;, date = &quot;2024-12-02T00:01:40.627199900-05:00[America/Lima]&quot;)
+public interface TransaccionesApiDelegate {
+
+    default Optional&lt;NativeWebRequest&gt; getRequest() {
+<span class="nc" id="L24">        return Optional.empty();</span>
+    }
+
+    /**
+     * GET /transacciones/historial : Retrieve transaction history
+     * This endpoint returns the list of all transactions in the system.
+     *
+     * @return A list of transactions (status code 200)
+     * @see TransaccionesApi#getTransactionHistory
+     */
+    default ResponseEntity&lt;List&lt;Transaction&gt;&gt; getTransactionHistory() {
+<span class="nc" id="L35">        getRequest().ifPresent(request -&gt; {</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader(&quot;Accept&quot;))) {</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (mediaType.isCompatibleWith(MediaType.valueOf(&quot;application/json&quot;))) {</span>
+<span class="nc" id="L38">                    String exampleString = &quot;{ \&quot;date\&quot; : \&quot;2000-01-23T04:56:07.000+00:00\&quot;, \&quot;amount\&quot; : 0.8008281904610115, \&quot;soureAccount\&quot; : \&quot;soureAccount\&quot;, \&quot;id\&quot; : \&quot;id\&quot;, \&quot;type\&quot; : \&quot;type\&quot;, \&quot;destinationAccount\&quot; : \&quot;destinationAccount\&quot; }&quot;;</span>
+<span class="nc" id="L39">                    ApiUtil.setExampleResponse(request, &quot;application/json&quot;, exampleString);</span>
+<span class="nc" id="L40">                    break;</span>
+                }
+<span class="nc" id="L42">            }</span>
+<span class="nc" id="L43">        });</span>
+<span class="nc" id="L44">        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_IMPLEMENTED);</span>
+
+    }
+
+    /**
+     * POST /transacciones/deposito/{accountNumber}/ : Register a deposit to an account
+     * Registers a deposit to a specific account identified by the account number.
+     *
+     * @param accountNumber The account number where the deposit will be made. (required)
+     * @param amount The amount of money to deposit. (required)
+     * @return Deposit successfully registered (status code 200)
+     *         or Account with number \&amp;quot;accountNumber\&amp;quot; not found. (status code 404)
+     *         or Bad request due to invalid data. (status code 400)
+     * @see TransaccionesApi#registerDeposit
+     */
+    default ResponseEntity&lt;Transaction&gt; registerDeposit(String accountNumber,
+        Double amount) {
+<span class="nc" id="L61">        getRequest().ifPresent(request -&gt; {</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader(&quot;Accept&quot;))) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                if (mediaType.isCompatibleWith(MediaType.valueOf(&quot;application/json&quot;))) {</span>
+<span class="nc" id="L64">                    String exampleString = &quot;{ \&quot;date\&quot; : \&quot;2000-01-23T04:56:07.000+00:00\&quot;, \&quot;amount\&quot; : 0.8008281904610115, \&quot;soureAccount\&quot; : \&quot;soureAccount\&quot;, \&quot;id\&quot; : \&quot;id\&quot;, \&quot;type\&quot; : \&quot;type\&quot;, \&quot;destinationAccount\&quot; : \&quot;destinationAccount\&quot; }&quot;;</span>
+<span class="nc" id="L65">                    ApiUtil.setExampleResponse(request, &quot;application/json&quot;, exampleString);</span>
+<span class="nc" id="L66">                    break;</span>
+                }
+<span class="nc" id="L68">            }</span>
+<span class="nc" id="L69">        });</span>
+<span class="nc" id="L70">        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_IMPLEMENTED);</span>
+
+    }
+
+    /**
+     * POST /transacciones/transferencia/ : Register a money transfer between two accounts
+     * Registers a money transfer from a source account to a destination account.
+     *
+     * @param sourceAccount The source account number from which the transfer will be made. (required)
+     * @param destinationAccount The destination account number where the transfer will be received. (required)
+     * @param amount The amount of money to transfer. (required)
+     * @return Withdrawal successfully registered (status code 200)
+     *         or Bad request due to invalid data. (status code 400)
+     *         or One or both accounts not found. (status code 404)
+     * @see TransaccionesApi#registerTransfer
+     */
+    default ResponseEntity&lt;Transaction&gt; registerTransfer(String sourceAccount,
+        String destinationAccount,
+        Double amount) {
+<span class="nc" id="L89">        getRequest().ifPresent(request -&gt; {</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader(&quot;Accept&quot;))) {</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">                if (mediaType.isCompatibleWith(MediaType.valueOf(&quot;application/json&quot;))) {</span>
+<span class="nc" id="L92">                    String exampleString = &quot;{ \&quot;date\&quot; : \&quot;2000-01-23T04:56:07.000+00:00\&quot;, \&quot;amount\&quot; : 0.8008281904610115, \&quot;soureAccount\&quot; : \&quot;soureAccount\&quot;, \&quot;id\&quot; : \&quot;id\&quot;, \&quot;type\&quot; : \&quot;type\&quot;, \&quot;destinationAccount\&quot; : \&quot;destinationAccount\&quot; }&quot;;</span>
+<span class="nc" id="L93">                    ApiUtil.setExampleResponse(request, &quot;application/json&quot;, exampleString);</span>
+<span class="nc" id="L94">                    break;</span>
+                }
+<span class="nc" id="L96">            }</span>
+<span class="nc" id="L97">        });</span>
+<span class="nc" id="L98">        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_IMPLEMENTED);</span>
+
+    }
+
+    /**
+     * POST /transacciones/retiro/{accountNumber}/ : Register a withdrawal from an account
+     * Registers a withdrawal from a specific account identified by the account number. number.
+     *
+     * @param accountNumber The account number from which the withdrawal will be made. (required)
+     * @param amount The amount of money to withdraw. (required)
+     * @return Withdrawal successfully registered (status code 200)
+     *         or Account with number \&amp;quot; accountNumber \&amp;quot; not found.. (status code 404)
+     *         or Bad request due to invalid data. (status code 400)
+     *         or Withdrawal amount exceeds available balance. (status code 422)
+     * @see TransaccionesApi#registerWithdrawal
+     */
+    default ResponseEntity&lt;Transaction&gt; registerWithdrawal(String accountNumber,
+        Double amount) {
+<span class="nc" id="L116">        getRequest().ifPresent(request -&gt; {</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader(&quot;Accept&quot;))) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                if (mediaType.isCompatibleWith(MediaType.valueOf(&quot;application/json&quot;))) {</span>
+<span class="nc" id="L119">                    String exampleString = &quot;{ \&quot;date\&quot; : \&quot;2000-01-23T04:56:07.000+00:00\&quot;, \&quot;amount\&quot; : 0.8008281904610115, \&quot;soureAccount\&quot; : \&quot;soureAccount\&quot;, \&quot;id\&quot; : \&quot;id\&quot;, \&quot;type\&quot; : \&quot;type\&quot;, \&quot;destinationAccount\&quot; : \&quot;destinationAccount\&quot; }&quot;;</span>
+<span class="nc" id="L120">                    ApiUtil.setExampleResponse(request, &quot;application/json&quot;, exampleString);</span>
+<span class="nc" id="L121">                    break;</span>
+                }
+<span class="nc" id="L123">            }</span>
+<span class="nc" id="L124">        });</span>
+<span class="nc" id="L125">        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_IMPLEMENTED);</span>
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

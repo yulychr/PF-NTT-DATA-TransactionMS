@@ -1,0 +1,6 @@
+src/main/java/com/example/demo/api/ApiUtil.java
+src/main/java/com/example/demo/api/TransaccionesApi.java
+src/main/java/com/example/demo/api/TransaccionesApiController.java
+src/main/java/com/example/demo/api/TransaccionesApiDelegate.java
+src/main/java/com/example/demo/model/ModelApiResponse.java
+src/main/java/com/example/demo/model/Transaction.java

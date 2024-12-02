@@ -1,0 +1,8 @@
+com\example\demo\api\TransaccionesApi$1.class
+com\example\demo\model\Transaction.class
+com\example\demo\api\TransaccionesApiController$1.class
+com\example\demo\api\TransaccionesApiDelegate.class
+com\example\demo\model\ModelApiResponse.class
+com\example\demo\api\TransaccionesApi.class
+com\example\demo\api\ApiUtil.class
+com\example\demo\api\TransaccionesApiController.class
