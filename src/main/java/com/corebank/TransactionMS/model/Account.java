@@ -13,11 +13,15 @@ public class Account {
     private String id;
     private String accountNumber;
     private double balance;
+    private String typeAccount;
+    private String customerId;
 
 
-    public Account(String id, String accountNumber, double balance) {
+    public Account(String id, String accountNumber, double balance,String typeAccount, String customerId) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.balance = balance;
+        this.typeAccount= typeAccount;
+        this.customerId = customerId;
     }
 }
