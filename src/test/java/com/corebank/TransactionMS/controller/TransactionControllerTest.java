@@ -4,7 +4,6 @@ import com.corebank.TransactionMS.dto.DepositRequestDTO;
 import com.corebank.TransactionMS.dto.TransferRequestDTO;
 import com.corebank.TransactionMS.dto.WithdrawalRequestDTO;
 import com.corebank.TransactionMS.model.Transaction;
-import com.corebank.TransactionMS.repository.AccountRepository;
 import com.corebank.TransactionMS.repository.TransactionRepository;
 import com.corebank.TransactionMS.service.TransactionService;
 import org.junit.jupiter.api.BeforeEach;

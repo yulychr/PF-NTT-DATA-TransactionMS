@@ -1,9 +1,9 @@
 package com.corebank.TransactionMS.service.impl;
 
 import com.corebank.TransactionMS.model.Transaction;
-import com.corebank.TransactionMS.service.transaction.DepositOperation;
-import com.corebank.TransactionMS.service.transaction.TransferOperation;
-import com.corebank.TransactionMS.service.transaction.WithdrawalOperation;
+import com.corebank.TransactionMS.service.transaction.impl.DepositOperationImpl;
+import com.corebank.TransactionMS.service.transaction.impl.TransferOperationImpl;
+import com.corebank.TransactionMS.service.transaction.impl.WithdrawalOperationImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -12,9 +12,9 @@ import reactor.core.publisher.Mono;
 @Component
 public class TransactionHandler {
 
-    private final DepositOperation depositOperation;
-    private final WithdrawalOperation withdrawalOperation;
-    private final TransferOperation transferOperation;
+    private final DepositOperationImpl depositOperation;
+    private final WithdrawalOperationImpl withdrawalOperation;
+    private final TransferOperationImpl transferOperation;
 
     public Mono<Transaction> handleDeposit(String accountNumber, double amount) {
         return depositOperation.execute(accountNumber, amount);
