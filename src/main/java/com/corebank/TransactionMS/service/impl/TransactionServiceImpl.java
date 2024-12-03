@@ -1,8 +1,6 @@
 package com.corebank.TransactionMS.service.impl;
 
-
 import com.corebank.TransactionMS.model.Transaction;
-import com.corebank.TransactionMS.repository.AccountRepository;
 import com.corebank.TransactionMS.repository.TransactionRepository;
 import com.corebank.TransactionMS.service.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +12,8 @@ import reactor.core.publisher.Mono;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final TransactionHandler transactionHandler;
-    private final AccountUpdater accountUpdater;
-    private final TransactionCreator transactionCreator;
 
     @Override
     public Mono<Transaction> registerDeposit(String accountNumber, double amount) {
@@ -30,10 +25,10 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionHandler.handleWithdrawal(accountNumber, amount);
     }
 
-    @Override
-    public Mono<Transaction> registerTransfer(String sourceAccount, String destinationAccount, double amount) {
-        return transactionHandler.handleTransfer(sourceAccount, destinationAccount, amount);
-    }
+        @Override
+        public Mono<Transaction> registerTransfer(String sourceAccount, String destinationAccount, double amount) {
+            return transactionHandler.handleTransfer(sourceAccount, destinationAccount, amount);
+        }
 
     @Override
     public Flux<Transaction> listTransactions() {

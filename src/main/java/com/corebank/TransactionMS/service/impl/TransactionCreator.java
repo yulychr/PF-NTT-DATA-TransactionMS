@@ -1,6 +1,5 @@
 package com.corebank.TransactionMS.service.impl;
 
-import com.corebank.TransactionMS.model.Account;
 import com.corebank.TransactionMS.model.Transaction;
 import com.corebank.TransactionMS.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +12,15 @@ import reactor.core.publisher.Mono;
 public class TransactionCreator {
     private final TransactionRepository transactionRepository;
 
-    public Mono<Transaction> createTransaction(String type, double amount, Account sourceAccount, Account destinationAccount) {
+    public Mono<Transaction> createTransaction(String type, double amount, String sourceAccount, String destinationAccount) {
         Transaction transaction = new Transaction();
         transaction.setDate(LocalDateTime.now());
         transaction.setType(type);
         transaction.setAmount(amount);
-        transaction.setSourceAccount(sourceAccount.getId());
+        transaction.setSourceAccount(sourceAccount);
 
         if (destinationAccount != null) {
-            transaction.setDestinationAccount(destinationAccount.getId());
+            transaction.setDestinationAccount(destinationAccount);
         }
 
         return transactionRepository.save(transaction);

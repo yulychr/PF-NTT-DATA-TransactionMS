@@ -4,7 +4,6 @@ import com.corebank.TransactionMS.dto.DepositRequestDTO;
 import com.corebank.TransactionMS.dto.TransferRequestDTO;
 import com.corebank.TransactionMS.dto.WithdrawalRequestDTO;
 import com.corebank.TransactionMS.model.Transaction;
-import com.corebank.TransactionMS.repository.TransactionRepository;
 import com.corebank.TransactionMS.service.TransactionService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +18,9 @@ import reactor.core.publisher.Mono;
 public class TransactionController {
 
     private TransactionService transactionService;
-    private TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionController(TransactionService transactionService, TransactionRepository transactionRepository){
-        this.transactionRepository= transactionRepository;
+    public TransactionController(TransactionService transactionService){
         this.transactionService = transactionService;
     }
 

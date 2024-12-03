@@ -1,14 +1,16 @@
 package com.corebank.TransactionMS.service.transaction;
 
+import com.corebank.TransactionMS.dto.WithdrawalRequestDTO;
 import com.corebank.TransactionMS.exception.AccountNotFoundException;
-import com.corebank.TransactionMS.exception.InsufficientFundsException;
 import com.corebank.TransactionMS.exception.InvalidTransferAmountException;
+import com.corebank.TransactionMS.model.Account;
 import com.corebank.TransactionMS.model.Transaction;
 import com.corebank.TransactionMS.repository.AccountRepository;
-import com.corebank.TransactionMS.service.impl.AccountUpdater;
 import com.corebank.TransactionMS.service.impl.TransactionCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -16,28 +18,43 @@ import reactor.core.publisher.Mono;
 public class WithdrawalOperation implements TransactionOperation{
 
     private final AccountRepository accountRepository;
-    private final AccountUpdater accountUpdater;
     private final TransactionCreator transactionCreator;
 
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+
+    private final String ACCOUNT_SERVICE_URL = "http://localhost:8087";
 
     @Override
     public Mono<Transaction> execute(String accountNumber, double amount) {
         if (amount <= 0) {
             return Mono.error(new InvalidTransferAmountException("Invalid withdrawal amount. Amount must be positive"));
         }
-        return accountRepository.findByAccountNumber(accountNumber)
+        return webClientBuilder.build()
+                .get()
+                .uri(ACCOUNT_SERVICE_URL + "/accounts/byAccountNumber/{accountNumber}", accountNumber)
+                .retrieve()
+                .onStatus(status -> status.value() == 404,
+                        clientResponse -> Mono.error(new AccountNotFoundException("Account with number " + accountNumber + " not found.")))
+                .bodyToMono(Account.class)
                 .flatMap(account -> {
-                    if (account.getBalance() >= amount) {
-                        return accountUpdater.updateBalance(account, amount, false);
-                    } else {
-                        return Mono.error(new InsufficientFundsException("Withdrawal amount exceeds available balance."));
-                    }
-                })
-                .flatMap(updatedAccount -> transactionCreator.createTransaction("withdrawal", amount, updatedAccount, null))
-                .switchIfEmpty(Mono.error(new AccountNotFoundException("Account with number " + accountNumber + " not found.")));
+                    return webClientBuilder.build()
+                            .post()
+                            .uri(ACCOUNT_SERVICE_URL + "/accounts/tWithdrawal")
+                            .bodyValue(new WithdrawalRequestDTO(accountNumber, amount))
+                            .retrieve()
+                            .bodyToMono(Account.class)
+                            .flatMap(updatedAccount -> {
+                                return transactionCreator.createTransaction("withdrawal", amount, accountNumber, null)
+                                        .map(transaction -> {
+                                            return transaction;
+                                        });
+                            });
+                });
     }
     @Override
     public Mono<Transaction> execute(String sourceAccount, String destinationAccount, double amount) {
         throw new UnsupportedOperationException("Withdrawal operation does not support transfers.");
     }
+
 }
