@@ -6,6 +6,7 @@ import com.corebank.TransactionMS.service.AccountServiceT;
 import com.corebank.TransactionMS.service.TransactionServiceT;
 import com.corebank.TransactionMS.service.transaction.operation.DepositOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -13,8 +14,15 @@ import reactor.core.publisher.Mono;
 @Component
 public class DepositOperationImpl implements DepositOperation {
 
-    private final AccountServiceT accountServiceT;
-    private final TransactionServiceT transactionServiceT;
+    private AccountServiceT accountServiceT;
+    private TransactionServiceT transactionServiceT;
+
+    @Autowired
+    public DepositOperationImpl(AccountServiceT accountServiceT, TransactionServiceT transactionServiceT){
+        this.accountServiceT = accountServiceT;
+        this.transactionServiceT = transactionServiceT;
+    }
+
 
     @Override
     public Mono<Transaction> execute(String accountNumber, double amount) {

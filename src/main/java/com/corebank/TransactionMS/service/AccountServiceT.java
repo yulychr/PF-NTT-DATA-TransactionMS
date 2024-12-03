@@ -4,6 +4,7 @@ import com.corebank.TransactionMS.dto.DepositRequestDTO;
 import com.corebank.TransactionMS.dto.WithdrawalRequestDTO;
 import com.corebank.TransactionMS.exception.AccountNotFoundException;
 import com.corebank.TransactionMS.model.Account;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -11,15 +12,22 @@ import reactor.core.publisher.Mono;
 @Service
 public class AccountServiceT {
 
-    private final WebClient.Builder webClientBuilder;
-    private final String ACCOUNT_SERVICE_URL = "http://localhost:8087";
+    private final WebClient webClient;
 
-    public AccountServiceT(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    @Value("${account.service.url}")
+    private String ACCOUNT_SERVICE_URL;
+
+    public AccountServiceT() {
+        this.webClient = WebClient.create();
+    }
+
+    public AccountServiceT(WebClient webClient, String ACCOUNT_SERVICE_URL) {
+        this.webClient = webClient;
+        this.ACCOUNT_SERVICE_URL = ACCOUNT_SERVICE_URL;
     }
 
     public Mono<Account> getAccountByNumber(String accountNumber) {
-        return webClientBuilder.build()
+        return webClient
                 .get()
                 .uri(ACCOUNT_SERVICE_URL + "/accounts/byAccountNumber/{accountNumber}", accountNumber)
                 .retrieve()
@@ -30,7 +38,7 @@ public class AccountServiceT {
 
 
     public Mono<Account> withdrawal(String accountNumber, double amount) {
-        return webClientBuilder.build()
+        return webClient
                 .post()
                 .uri(ACCOUNT_SERVICE_URL + "/accounts/tWithdrawal")
                 .bodyValue(new WithdrawalRequestDTO(accountNumber, amount))
@@ -39,7 +47,7 @@ public class AccountServiceT {
     }
 
     public Mono<Account> deposit(String accountNumber, double amount) {
-        return webClientBuilder.build()
+        return webClient
                 .post()
                 .uri(ACCOUNT_SERVICE_URL + "/accounts/tDeposit")
                 .bodyValue(new DepositRequestDTO(accountNumber, amount))

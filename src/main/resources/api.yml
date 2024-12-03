@@ -82,7 +82,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Transaction"
         '404':
-          description: Account with number " accountNumber " not found..
+          description: Account with number " accountNumber " not found.
         "400":
           description: "Bad request due to invalid data."
           content:

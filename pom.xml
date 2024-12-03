@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -129,6 +129,14 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Reactor Test for testing reactive types -->
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<version>3.5.4</version>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 
@@ -221,6 +229,28 @@
 						<exclude>com/example/demo/api/**</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.6.0</version>
+				<configuration>
+					<configLocation>${project.basedir}/src/main/resources/checkstyle.xml</configLocation>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<!-- Excluir directorios o archivos específicos -->
+							<excludes>
+								<exclude>target/**</exclude> <!-- Excluir todo dentro de target -->
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>

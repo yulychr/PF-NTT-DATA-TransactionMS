@@ -25,10 +25,10 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionHandler.handleWithdrawal(accountNumber, amount);
     }
 
-        @Override
-        public Mono<Transaction> registerTransfer(String sourceAccount, String destinationAccount, double amount) {
-            return transactionHandler.handleTransfer(sourceAccount, destinationAccount, amount);
-        }
+    @Override
+    public Mono<Transaction> registerTransfer(String sourceAccount, String destinationAccount, double amount) {
+        return transactionHandler.handleTransfer(sourceAccount, destinationAccount, amount);
+    }
 
     @Override
     public Flux<Transaction> listTransactions() {

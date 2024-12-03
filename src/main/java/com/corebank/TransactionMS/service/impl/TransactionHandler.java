@@ -4,17 +4,23 @@ import com.corebank.TransactionMS.model.Transaction;
 import com.corebank.TransactionMS.service.transaction.impl.DepositOperationImpl;
 import com.corebank.TransactionMS.service.transaction.impl.TransferOperationImpl;
 import com.corebank.TransactionMS.service.transaction.impl.WithdrawalOperationImpl;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
 @Component
 public class TransactionHandler {
 
-    private final DepositOperationImpl depositOperation;
-    private final WithdrawalOperationImpl withdrawalOperation;
-    private final TransferOperationImpl transferOperation;
+    private DepositOperationImpl depositOperation;
+    private WithdrawalOperationImpl withdrawalOperation;
+    private  TransferOperationImpl transferOperation;
+
+    @Autowired
+    public TransactionHandler(DepositOperationImpl depositOperation, WithdrawalOperationImpl withdrawalOperation, TransferOperationImpl transferOperation) {
+        this.depositOperation = depositOperation;
+        this.withdrawalOperation = withdrawalOperation;
+        this.transferOperation = transferOperation;
+    }
 
     public Mono<Transaction> handleDeposit(String accountNumber, double amount) {
         return depositOperation.execute(accountNumber, amount);
