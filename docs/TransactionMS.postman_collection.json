@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "0f96ecd7-7055-4561-99c5-dbe237d69263",
+		"name": "TransactionMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "39401715"
+	},
+	"item": [
+		{
+			"name": "Transactions history",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8088/transactions/history"
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNumber\":\"317337\",\r\n    \"amount\":500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/transactions/deposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"transactions",
+						"deposit"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "200",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit account not exist",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNumber\":\"10\",\r\n    \"amount\":100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/transactions/deposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"transactions",
+						"deposit"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "200",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Desposit amount negative",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNumber\":\"567129\",\r\n    \"amount\":-100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8088/transactions/deposit"
+			},
+			"response": []
+		},
+		{
+			"name": "Withdrawal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNumber\":\"658445\",\r\n    \"amount\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/transactions/withdrawal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"transactions",
+						"withdrawal"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "500",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Withdrawal amount negative",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNumber\":\"658445\",\r\n    \"amount\": -50\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8088/transactions/withdrawal"
+			},
+			"response": []
+		},
+		{
+			"name": "transfer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sourceAccount\": \"317337\",\r\n    \"destinationAccount\": \"146504\",\r\n    \"amount\": 100\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8088/transactions/transfer"
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer SourceAccount NotFound",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sourceAccount\": \"1\",\r\n    \"destinationAccount\": \"146504\",\r\n    \"amount\": 40\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8088/transactions/transfer"
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer destinationAccount NotFount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sourceAccount\": \"658445\",\r\n    \"destinationAccount\": \"1\",\r\n    \"amount\": 40\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8088/transactions/transfer"
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer sourceAccount does not have enough balance",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sourceAccount\": \"658445\",\r\n    \"destinationAccount\": \"146504\",\r\n    \"amount\": 11000\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8088/transactions/transfer"
+			},
+			"response": []
+		}
+	]
+}
