@@ -5,10 +5,10 @@ This microservice is responsible for managing all transactions within the system
 
 ## Endpoints
 
-- **POST /transacciones/deposito**: Registers a deposit in a bank account.
-- **POST /transacciones/retiro**: Registers a withdrawal from a bank account.
-- **POST /transacciones/transferencia**: Registers a transfer between bank accounts.
-- **GET /transacciones/historial**: Retrieves the history of all transactions made.
+- **POST /transactions/deposit**: Registers a deposit in a bank account.
+- **POST /transactions/withdrawal**: Registers a withdrawal from a bank account.
+- **POST /transactions/transfer**: Registers a transfer between bank accounts.
+- **GET /transactions/history**: Retrieves the history of all transactions made.
 
 ## Business Rules
 
