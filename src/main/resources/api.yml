@@ -50,7 +50,7 @@ paths:
                   summary: Invalid deposit amount
                   value:
                     code: "400"
-                    message: "Invalid deposit amount. Amount must be positive."
+                    message: "Invalid deposit amount. Amount must be greater than zero."
                     details:
                       field: "amount"
                       issue: "invalid_amount"
@@ -94,7 +94,7 @@ paths:
                   summary: Invalid deposit amount
                   value:
                     code: "400"
-                    message: "Invalid withdrawal amount. Amount must be positive."
+                    message: "Invalid withdrawal amount. Amount must be greater than zero."
                     details:
                       field: "amount"
                       issue: "invalid_amount"
@@ -148,7 +148,7 @@ paths:
                   summary: Invalid deposit amount
                   value:
                     code: "400"
-                    message: "Invalid withdrawal amount. Amount must be positive."
+                    message: "Invalid withdrawal amount. Amount must be greater than zero."
                     details:
                       field: "amount"
                       issue: "invalid_amount"

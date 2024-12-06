@@ -19,8 +19,8 @@ public class TransferOperationImpl implements TransferOperation {
 
     @Override
     public Mono<Transaction> execute(String sourceAccount, String destinationAccount, double amount) {
-        if (amount <= 0) {
-            return Mono.error(new InvalidTransferAmountException("Invalid transfer amount. Amount must be positive."));
+        if (amount < 0) {
+            return Mono.error(new InvalidTransferAmountException("Invalid transfer amount. Amount must be greater than zero"));
         }
 
         return accountServiceT.getAccountByNumber(sourceAccount)

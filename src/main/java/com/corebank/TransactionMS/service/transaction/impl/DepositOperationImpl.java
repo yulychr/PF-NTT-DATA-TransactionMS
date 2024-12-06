@@ -26,8 +26,8 @@ public class DepositOperationImpl implements DepositOperation {
 
     @Override
     public Mono<Transaction> execute(String accountNumber, double amount) {
-        if (amount <= 0) {
-            return Mono.error(new InvalidTransferAmountException("Invalid deposit amount. Amount must be positive."));
+        if (amount < 0) {
+            return Mono.error(new InvalidTransferAmountException("Invalid deposit amount. Amount must be greater than zero."));
         }
         return accountServiceT.getAccountByNumber(accountNumber)
                 .flatMap(account -> {
