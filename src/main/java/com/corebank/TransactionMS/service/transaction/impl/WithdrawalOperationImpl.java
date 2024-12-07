@@ -20,7 +20,7 @@ public class WithdrawalOperationImpl implements WithdrawalOperation {
     @Override
     public Mono<Transaction> execute(String accountNumber, double amount) {
         if (amount < 0) {
-            return Mono.error(new InvalidTransferAmountException("Invalid withdrawal amount. Amount must be greater than zero"));
+            return Mono.error(new InvalidTransferAmountException("Invalid withdrawal amount. Amount must be greater than zero."));
         }
         return accountServiceT.getAccountByNumber(accountNumber)
                 .flatMap(account -> {

@@ -63,7 +63,7 @@ public class WithdrawalOperationImplTest {
     void testExecuteInvalidWithdrawalAmount() {
         Mono<Transaction> result = withdrawalOperation.execute(accountNumber, invalidAmount);
         InvalidTransferAmountException exception = assertThrows(InvalidTransferAmountException.class, result::block);
-        assertEquals("Invalid withdrawal amount. Amount must be positive", exception.getMessage());
+        assertEquals("Invalid withdrawal amount. Amount must be greater than zero.", exception.getMessage());
         verify(accountServiceT, never()).getAccountByNumber(accountNumber);
         verify(accountServiceT, never()).withdrawal(accountNumber, invalidAmount);
         verify(transactionServiceT, never()).createTransaction(any(), anyDouble(), anyString(), any());

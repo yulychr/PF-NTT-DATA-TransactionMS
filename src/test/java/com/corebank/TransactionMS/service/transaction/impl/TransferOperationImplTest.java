@@ -69,7 +69,7 @@ public class TransferOperationImplTest {
     void testExecuteInvalidTransferAmount() {
         Mono<Transaction> result = transferOperation.execute(sourceAccount, destinationAccount, invalidAmount);
         InvalidTransferAmountException exception = assertThrows(InvalidTransferAmountException.class, result::block);
-        assertEquals("Invalid transfer amount. Amount must be positive.", exception.getMessage());
+        assertEquals("Invalid transfer amount. Amount must be greater than zero.", exception.getMessage());
         verify(accountServiceT, never()).getAccountByNumber(sourceAccount);
         verify(accountServiceT, never()).getAccountByNumber(destinationAccount);
         verify(accountServiceT, never()).withdrawal(sourceAccount, invalidAmount);

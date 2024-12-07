@@ -58,7 +58,7 @@ public class DepositOperationImplTest {
     void testExecuteInvalidDepositAmount() {
         Mono<Transaction> result = depositOperation.execute(accountNumber, invalidAmount);
         InvalidTransferAmountException exception = assertThrows(InvalidTransferAmountException.class, result::block);
-        assertEquals("Invalid deposit amount. Amount must be positive.", exception.getMessage());
+        assertEquals("Invalid deposit amount. Amount must be greater than zero.", exception.getMessage());
         verify(accountServiceT, never()).getAccountByNumber(accountNumber);
         verify(accountServiceT, never()).deposit(accountNumber, invalidAmount);
         verify(transactionServiceT, never()).createTransaction(any(), anyDouble(), anyString(), any());
