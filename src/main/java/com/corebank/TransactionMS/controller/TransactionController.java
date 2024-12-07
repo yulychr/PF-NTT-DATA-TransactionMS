@@ -27,28 +27,24 @@ public class TransactionController {
     //Endpoint para realizar un deposito
     @PostMapping("/deposit")
     public Mono<ResponseEntity<Transaction>> registerDeposit(@RequestBody DepositRequestDTO depositRequestDTO) {
-        String accountNumber = depositRequestDTO.getAccountNumber();
-        double amount = depositRequestDTO.getAmount();
-        return transactionService.registerDeposit(accountNumber, amount)
+        return transactionService.registerDeposit(depositRequestDTO.getAccountNumber(), depositRequestDTO.getAmount())
                 .map(transaction -> ResponseEntity.ok(transaction));
     }
 
     // Endpoint para realizar un retiro
     @PostMapping("/withdrawal")
     public Mono<ResponseEntity<Transaction>> registerWithdrawal(@RequestBody WithdrawalRequestDTO withdrawalRequestDTO) {
-        String accountNumber = withdrawalRequestDTO.getAccountNumber();
-        double amount = withdrawalRequestDTO.getAmount();
-        return transactionService.registerWithdrawal(accountNumber, amount)
+        return transactionService.registerWithdrawal(withdrawalRequestDTO.getAccountNumber(), withdrawalRequestDTO.getAmount())
                 .map(transaction -> ResponseEntity.ok(transaction));
     }
 
     // Endpoint para realizar una transferencia entre dos cuentas
     @PostMapping("/transfer")
     public Mono<ResponseEntity<Transaction>> registerTransfer(@RequestBody TransferRequestDTO transferRequestDTO) {
-        String sourceAccount = transferRequestDTO.getSourceAccount();
-        String destinationAccount = transferRequestDTO.getDestinationAccount();
-        double amount = transferRequestDTO.getAmount();
-        return transactionService.registerTransfer(sourceAccount, destinationAccount, amount)
+        return transactionService.registerTransfer(
+                transferRequestDTO.getSourceAccount(),
+                transferRequestDTO.getDestinationAccount(),
+                transferRequestDTO.getAmount())
                 .map(transaction -> ResponseEntity.ok(transaction));
     }
 
